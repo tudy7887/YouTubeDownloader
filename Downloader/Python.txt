@@ -1,0 +1,65 @@
+﻿from gzip import WRITE
+from msilib.schema import Environment
+from moviepy.editor import AudioFileClip
+from pytube import YouTube
+import os
+import subprocess
+import re
+
+def DownloadAudio(link, path, name, quality):
+    output = ""
+    mp4_path = os.path.join(path, "temp.mp4")
+    mp3_path = os.path.join(path, name)
+    ffmpeg_path = r'C:\ffmpeg\bin\ffmpeg.exe'
+    file = YouTube(link)
+    
+    if file.age_restricted:
+        try:
+            file.bypass_age_gate()
+        except:
+            output ="[ERROR]: " + name + " Could Not Be Downloaded: Bypass Age Fail! \n"
+            return output
+   
+    try:
+        file.streams.get_audio_only().download(path, "temp.mp4")
+    except:
+        output = "[ERROR]: " + name + " Could Not Be Downloaded: Download Fail! \n"
+        return output
+    
+    try:
+        if quality=="Default":
+            cmd = [ffmpeg_path, "-i", mp4_path, "-vn", mp3_path]
+        else:
+            cmd = [ffmpeg_path, "-i", mp4_path, "-b:a", quality, "-vn", mp3_path]
+        subprocess.run(cmd, check=True, shell=True)
+    except Exception as e:
+        output = "[ERROR]: " + name + " Could Not Be Downloaded: Conversion Fail! \n"
+        output += repr(e)+"\n"
+        return output
+    os.remove(mp4_path)
+
+    output = name + ".mp3 Downloaded Successfully! \n"
+    return output
+
+def DownloadVideo(link, path, name, quality):
+    output = ""
+    file = YouTube(link)
+    
+    if file.age_restricted:
+        try:
+            file.bypass_age_gate()
+        except:
+            output = "[ERROR]: " + name + " Could Not Be Downloaded: Bypass Age Fail! \n"
+            return output
+   
+    try:
+        if quality=="Highest": 
+             file.streams.filter(subtype="mp4").order_by('filesize').desc().first().download(path, filename=name)
+        else:
+             file.streams.filter(res=quality, subtype="mp4").first().download(path, filename=name)
+    except:
+        output = "[ERROR]: " + name + " Could Not Be Downloaded: Download Fail! \n"
+        return output
+
+    output = name + ".mp4 Downloaded Successfully! \n"
+    return output
