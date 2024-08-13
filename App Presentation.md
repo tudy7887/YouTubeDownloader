@@ -1,8 +1,12 @@
 **YouTube Downloader And Converter**
+- ![Youtube Downloader Diagram](https://github.com/user-attachments/assets/3c867fc9-c3c0-4e80-be66-17d771986f3e)
+- MVVM Architecture
+- WPF User Interface
+- C# and Python Implementation
+
 
 **Features:**
-- WPF App
-- Used to download videos / audios from You Tube
+- Download videos / audios from You Tube
 - Works with single video link
   ![YouDown3](https://github.com/user-attachments/assets/283a5b9e-df94-4612-bc30-e501dc6acf04)
 - Works with playlist link
